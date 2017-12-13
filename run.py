@@ -1,5 +1,5 @@
 import os
-from flask import Flask, request, redirect, url_for
+from flask import Flask, request, redirect, url_for,render_template
 from werkzeug.utils import secure_filename
 import cv2
 import sys
@@ -15,7 +15,7 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 # app.config.from_object('config')
 recognizer = cv2.createLBPHFaceRecognizer()
 detector= cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
-globe=""
+global globe
 
 def allowed_file(filename):
 	return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -61,9 +61,6 @@ def upload_file():
 		if file and allowed_file(file.filename):
 			filename = secure_filename(file.filename)
 			file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-			globe=filename
-			print "             \n\n\n"
-			print globe
 			return redirect(url_for('uploaded_file',filename=filename))
 	return '''
 	<!doctype html>
@@ -75,30 +72,19 @@ def upload_file():
 	</form>
 	'''
 
-@app.route('/upload', methods=['GET', 'POST'])
-def uploaded_file():
-
-	# recognizer = cv2.createLBPHFaceRecognizer()
-	# detector= cv2.CascadeClassifier("/home/unholy-me/Desktop/haarcascade_frontalface_default.xml")
+@app.route('/upload/<filename>', methods=['GET', 'POST'])
+def uploaded_file(filename):
 
 	faces,Ids = getImagesAndLabels('/home/unholy-me/Desktop/webapp/static/Narendra/')
 	x=[]
 	for i in range(len(Ids)):
 		x.append(1)
 	x=np.array(x)
-	# print faces
-	# print x
 	recognizer.train(faces, x)
-	# recognizer.save('trainner.yml')
-	# imagePath = sys.argv[1]
-	print globe
-	print type(globe)
-	imagePath= "/home/unholy-me/Desktop/webapp/uploads/"+"modi.png"
-	print imagePath
-	print "\n\n\n\n\n\n"
+	print filename
+	imagePath= "/home/unholy-me/Desktop/webapp/uploads/"+str(filename)
 	image = cv2.imread(imagePath)
 	gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-	print recognizer.predict(gray)
 	# Detect faces in the image
 	faces = detector.detectMultiScale(
 	    gray,
@@ -109,14 +95,26 @@ def uploaded_file():
 	)
 
 	print("Found {0} faces!".format(len(faces)))
+	facefound=False
+	modifound=False
+	kejrufound=False
+	
+	if len(faces)>0:
+		facefound=True
+	m,sm=recognizer.predict(gray)
+
+	if m==1:
+		modifound=True
+	else:
+		modifound=False
 
 	# Draw a rectangle around the Faces
 	for (x, y, w, h) in faces:
 	    cv2.rectangle(image, (x, y), (x+w, y+h), (0, 255, 0), 2)
 
 	cv2.imshow("Faces found", image)
-	return '''
-	<!doctype html>
-	<title>Results</title>
-	<h2>Detected Faces:</h2>
-	'''
+	# cv2.waitKey(0)
+	# cv2.save()
+	cv2.imwrite("/home/unholy-me/Desktop/webapp/results/display.jpg", image)
+	image=imread("/home/unholy-me/Desktop/webapp/results/display.jpg")
+	return render_template("result.html",f=facefound,m=modifound,k=kejrufound,img=image)
