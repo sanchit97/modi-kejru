@@ -41,7 +41,11 @@ def getImagesAndLabels(path):
 		#If a face is there then append that in the list as well as Id of it
 		for (x,y,w,h) in faces:
 			faceSamples.append(imageNp[y:y+h,x:x+w])
-			Ids.append(Id)
+			print Id
+			if Id>100:
+				Ids.append(0)
+			else:
+				Ids.append(1)
 	return faceSamples,Ids
 
 
@@ -75,11 +79,9 @@ def upload_file():
 @app.route('/upload/<filename>', methods=['GET', 'POST'])
 def uploaded_file(filename):
 
-	faces,Ids = getImagesAndLabels('/home/unholy-me/Desktop/webapp/static/Narendra/')
-	x=[]
-	for i in range(len(Ids)):
-		x.append(1)
-	x=np.array(x)
+	faces,Ids = getImagesAndLabels('/home/unholy-me/Desktop/webapp/Train/')
+	x=np.array(Ids)
+	print x
 	recognizer.train(faces, x)
 	print filename
 	imagePath= "/home/unholy-me/Desktop/webapp/uploads/"+str(filename)
@@ -87,11 +89,11 @@ def uploaded_file(filename):
 	gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 	# Detect faces in the image
 	faces = detector.detectMultiScale(
-	    gray,
-	    scaleFactor=1.1,
-	    minNeighbors=5,
-	    minSize=(30, 30),
-	    flags = cv2.cv.CV_HAAR_SCALE_IMAGE
+		gray,
+		scaleFactor=1.1,
+		minNeighbors=5,
+		minSize=(30, 30),
+		flags = cv2.cv.CV_HAAR_SCALE_IMAGE
 	)
 
 	print("Found {0} faces!".format(len(faces)))
@@ -110,11 +112,12 @@ def uploaded_file(filename):
 
 	# Draw a rectangle around the Faces
 	for (x, y, w, h) in faces:
-	    cv2.rectangle(image, (x, y), (x+w, y+h), (0, 255, 0), 2)
+		cv2.rectangle(image, (x, y), (x+w, y+h), (0, 255, 0), 2)
 
-	cv2.imshow("Faces found", image)
-	# cv2.waitKey(0)
-	# cv2.save()
+	# cv2.imshow("Faces found", image)
+	print facefound
+	print modifound
+	print kejrufound
 	cv2.imwrite("/home/unholy-me/Desktop/webapp/results/display.jpg", image)
-	image=imread("/home/unholy-me/Desktop/webapp/results/display.jpg")
-	return render_template("result.html",f=facefound,m=modifound,k=kejrufound,img=image)
+	image=cv2.imread("/home/unholy-me/Desktop/webapp/results/display.jpg",0)
+	return render_template("result.html",f=facefound,m=modifound,k=kejrufound)
