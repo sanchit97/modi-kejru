@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from PIL import Image
 
-UPLOAD_FOLDER = '/home/unholy-me/Desktop/webapp/uploads'
+UPLOAD_FOLDER = '/home/sanchit/Desktop/cloner/modi-kejru/uploads'
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
 
 app = Flask(__name__)
@@ -79,12 +79,12 @@ def upload_file():
 @app.route('/upload/<filename>', methods=['GET', 'POST'])
 def uploaded_file(filename):
 
-	faces,Ids = getImagesAndLabels('/home/unholy-me/Desktop/webapp/Train/')
+	faces,Ids = getImagesAndLabels('/home/sanchit/Desktop/cloner/modi-kejru/Train/')
 	x=np.array(Ids)
 	print x
 	recognizer.train(faces, x)
 	print filename
-	imagePath= "/home/unholy-me/Desktop/webapp/uploads/"+str(filename)
+	imagePath= "/home/sanchit/Desktop/cloner/modi-kejru/uploads/"+str(filename)
 	image = cv2.imread(imagePath)
 	gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 	# Detect faces in the image
@@ -118,6 +118,6 @@ def uploaded_file(filename):
 	print facefound
 	print modifound
 	print kejrufound
-	cv2.imwrite("/home/unholy-me/Desktop/webapp/results/display.jpg", image)
-	image=cv2.imread("/home/unholy-me/Desktop/webapp/results/display.jpg",0)
+	cv2.imwrite("/home/sanchit/Desktop/cloner/modi-kejru/results/display.jpg", image)
+	image=cv2.imread("/home/sanchit/Desktop/cloner/modi-kejru/results/display.jpg",0)
 	return render_template("result.html",f=facefound,m=modifound,k=kejrufound)
