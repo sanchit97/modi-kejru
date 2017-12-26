@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from PIL import Image
 
-UPLOAD_FOLDER = '/uploads'
+UPLOAD_FOLDER = 'uploads/'
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
 
 app = Flask(__name__)
@@ -76,15 +76,15 @@ def upload_file():
 	</form>
 	'''
 
-@app.route('/upload/<filename>', methods=['GET', 'POST'])
+@app.route('/<filename>', methods=['GET'])
 def uploaded_file(filename):
 
-	faces,Ids = getImagesAndLabels('/home/sanchit/Desktop/cloner/modi-kejru/Train/')
+	faces,Ids = getImagesAndLabels('Train/')
 	x=np.array(Ids)
 	print x
 	recognizer.train(faces, x)
 	print filename
-	imagePath= "/uploads/"+str(filename)
+	imagePath= "uploads/"+str(filename)
 	image = cv2.imread(imagePath)
 	gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 	# Detect faces in the image
@@ -108,16 +108,19 @@ def uploaded_file(filename):
 	if m==1:
 		modifound=True
 	else:
-		modifound=False
+		kejrufound=True
 
 	# Draw a rectangle around the Faces
 	for (x, y, w, h) in faces:
 		cv2.rectangle(image, (x, y), (x+w, y+h), (0, 255, 0), 2)
 
 	# cv2.imshow("Faces found", image)
-	print facefound
-	print modifound
-	print kejrufound
-	cv2.imwrite("/home/sanchit/Desktop/cloner/modi-kejru/results/display.jpg", image)
-	image=cv2.imread("/home/sanchit/Desktop/cloner/modi-kejru/results/display.jpg",0)
-	return render_template("result.html",f=facefound,m=modifound,k=kejrufound)
+	# print str(facefound)
+	# print str(modifound)
+	# print str(kejrufound)
+	facefound=str(facefound)
+	print type(facefound)
+	cv2.imwrite("static/results/display.jpg", image)
+	image=cv2.imread("static/results/display.jpg",0)
+	print "Hello"
+	return render_template("result.html",f=str(facefound),m=str(modifound),k=str(kejrufound),img="static/results/display.jpg")
