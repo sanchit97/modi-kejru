@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from PIL import Image
 
-UPLOAD_FOLDER = '/home/sanchit/Desktop/cloner/modi-kejru/uploads'
+UPLOAD_FOLDER = '/uploads'
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
 
 app = Flask(__name__)
@@ -84,7 +84,7 @@ def uploaded_file(filename):
 	print x
 	recognizer.train(faces, x)
 	print filename
-	imagePath= "/home/sanchit/Desktop/cloner/modi-kejru/uploads/"+str(filename)
+	imagePath= "/uploads/"+str(filename)
 	image = cv2.imread(imagePath)
 	gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 	# Detect faces in the image
