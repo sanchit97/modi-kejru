@@ -81,9 +81,9 @@ def uploaded_file(filename):
 
 	faces,Ids = getImagesAndLabels('Train/')
 	x=np.array(Ids)
-	print x
+	# print x
 	recognizer.train(faces, x)
-	print filename
+	# print filename
 	imagePath= "uploads/"+str(filename)
 	image = cv2.imread(imagePath)
 	gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -96,7 +96,7 @@ def uploaded_file(filename):
 		flags = cv2.cv.CV_HAAR_SCALE_IMAGE
 	)
 
-	print("Found {0} faces!".format(len(faces)))
+	# print("Found {0} faces!".format(len(faces)))
 	facefound=False
 	modifound=False
 	kejrufound=False
@@ -119,8 +119,8 @@ def uploaded_file(filename):
 	# print str(modifound)
 	# print str(kejrufound)
 	facefound=str(facefound)
-	print type(facefound)
+	# print type(facefound)
 	cv2.imwrite("static/results/display.jpg", image)
 	image=cv2.imread("static/results/display.jpg",0)
-	print "Hello"
+	# print "Hello"
 	return render_template("result.html",f=str(facefound),m=str(modifound),k=str(kejrufound),img="static/results/display.jpg")
