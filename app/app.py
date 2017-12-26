@@ -3,7 +3,7 @@ from flask import Flask, request, redirect, url_for,render_template
 from werkzeug.utils import secure_filename
 import cv2
 import sys
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 import numpy as np
 from PIL import Image
 
