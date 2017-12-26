@@ -1,4 +1,0 @@
-Flask==0.12.2
-gunicorn==19.7.1
-numpy==1.13.3
-Pillow==2.3.0
