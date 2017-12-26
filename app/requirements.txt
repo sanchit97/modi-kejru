@@ -3,3 +3,4 @@ app==0.0.1
 gunicorn==19.7.1
 numpy==1.13.3
 Pillow==2.3.0
+opencv-python==3.3.0.10
