@@ -15,7 +15,8 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 # app.config.from_object('config')
 
 # recognizer = cv2.createLBPHFaceRecognizer()
-recognizer = cv2.face.LBPHFaceRecognizer_create()
+recognizer_modi = cv2.face.LBPHFaceRecognizer_create()
+recognizer_kejru = cv2.face.LBPHFaceRecognizer_create()
 detector= cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
 # global globe
 
@@ -83,8 +84,16 @@ def uploaded_file(filename):
 
 	faces,Ids = getImagesAndLabels('Train/')
 	x=np.array(Ids)
+	y=[]
+	recognizer_modi.train(faces, x)
+	for i in range(len(x)):
+		if x[i]==0:
+			y.append(1)
+		else:
+			y.append(0)
+	y=np.array(y)
+	recognizer_kejru.train(faces, y)
 	# print x
-	recognizer.train(faces, x)
 	# print filename
 	imagePath= "uploads/"+str(filename)
 	image = cv2.imread(imagePath)
@@ -106,24 +115,22 @@ def uploaded_file(filename):
 	
 	if len(faces)>0:
 		facefound=True
-	m,sm=recognizer.predict(gray)
+	m1,sm1=recognizer_modi.predict(gray)
+	m2,sm2=recognizer_kejru.predict(gray)
 
-	if m==1:
-		modifound=True
-	else:
-		kejrufound=True
+	if facefound==True:
+		if m1==1:
+			modifound=True
+		if m2==0:
+			kejrufound=True
 
-	# Draw a rectangle around the Faces
-	for (x, y, w, h) in faces:
-		cv2.rectangle(image, (x, y), (x+w, y+h), (0, 255, 0), 2)
+		# Draw a rectangle around the Faces
+		for (x, y, w, h) in faces:
+			cv2.rectangle(image, (x, y), (x+w, y+h), (0, 255, 0), 2)
 
-	# cv2.imshow("Faces found", image)
-	# print str(facefound)
-	# print str(modifound)
-	# print str(kejrufound)
-	facefound=str(facefound)
-	# print type(facefound)
-	cv2.imwrite("static/results/display.jpg", image)
-	image=cv2.imread("static/results/display.jpg",0)
-	# print "Hello"
+		facefound=str(facefound)
+		# print type(facefound)
+		cv2.imwrite("static/results/display.jpg", image)
+		image=cv2.imread("static/results/display.jpg",0)
+
 	return render_template("result.html",f=str(facefound),m=str(modifound),k=str(kejrufound),img="static/results/display.jpg")
