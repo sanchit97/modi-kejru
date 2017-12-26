@@ -41,7 +41,7 @@ def getImagesAndLabels(path):
 		#If a face is there then append that in the list as well as Id of it
 		for (x,y,w,h) in faces:
 			faceSamples.append(imageNp[y:y+h,x:x+w])
-			print Id
+			# print Id
 			if Id>100:
 				Ids.append(0)
 			else:
