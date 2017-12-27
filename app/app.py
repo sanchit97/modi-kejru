@@ -130,7 +130,7 @@ def uploaded_file(filename):
 
 		facefound=str(facefound)
 		# print type(facefound)
-		cv2.imwrite("static/results/display.jpg", image)
-		image=cv2.imread("static/results/display.jpg",0)
+	cv2.imwrite("static/results/display.jpg", image)
+	image=cv2.imread("static/results/display.jpg",0)
 
 	return render_template("result.html",f=str(facefound),m=str(modifound),k=str(kejrufound),img="static/results/display.jpg")
